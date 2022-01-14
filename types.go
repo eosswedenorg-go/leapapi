@@ -3,7 +3,7 @@ package eosapi;
 
 import "time"
 
-type ReqParams struct {
+type Client struct {
     Url string
     Host string
 }

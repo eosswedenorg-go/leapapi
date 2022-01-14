@@ -18,11 +18,18 @@ func init() {
     jsontime.SetDefaultTimeFormat("2006-01-02T15:04:05", time.UTC)
 }
 
-func send(p ReqParams, method string, path string) (*req.Resp, error) {
+func New(url string) (*Client) {
+    return &Client{
+        Url: url,
+        Host: "",
+    }
+}
 
-    host := p.Host
+func (c *Client) send(method string, path string) (*req.Resp, error) {
+
+    host := c.Host
     if len(host) < 1 {
-        u, err := url.Parse(p.Url)
+        u, err := url.Parse(c.Url)
         if err != nil {
             return nil, err
         }
@@ -37,16 +44,16 @@ func send(p ReqParams, method string, path string) (*req.Resp, error) {
     }
 
     r := req.New()
-    return r.Do(method, p.Url + path, headers)
+    return r.Do(method, c.Url + path, headers)
 }
 
 //  GetInfo - Fetches "/v1/chain/get_info" from API
 // ---------------------------------------------------------
-func GetInfo(params ReqParams) (Info, error) {
+func (c *Client) GetInfo() (Info, error) {
 
     var info Info
 
-    r, err := send(params, "GET", "/v1/chain/get_info")
+    r, err := c.send("GET", "/v1/chain/get_info")
     if err == nil {
         resp := r.Response()
         body, _ := ioutil.ReadAll(resp.Body)
@@ -62,11 +69,11 @@ func GetInfo(params ReqParams) (Info, error) {
 
 //  Health - Fetches "/v2/health" from API
 // ---------------------------------------------------------
-func GetHealth(params ReqParams) (Health, error) {
+func (c *Client) GetHealth() (Health, error) {
 
     var health Health;
 
-    r, err := send(params, "GET", "/v2/health")
+    r, err := c.send("GET", "/v2/health")
     if err == nil {
         resp := r.Response()
         body, _ := ioutil.ReadAll(resp.Body)
