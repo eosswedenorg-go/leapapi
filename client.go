@@ -10,7 +10,7 @@ import (
     jsontime "github.com/liamylian/jsontime/v2/v2"
 )
 
-var json = jsontime.ConfigWithCustomTimeFormat
+var jsonCustom = jsontime.ConfigWithCustomTimeFormat
 
 func init() {
 
@@ -62,7 +62,7 @@ func (c *Client) GetInfo() (Info, error) {
         info.HTTPStatusCode = resp.StatusCode
 
         // Parse json
-        err = json.Unmarshal(body, &info)
+        err = jsonCustom.Unmarshal(body, &info)
     }
     return info, err
 }
@@ -82,7 +82,7 @@ func (c *Client) GetHealth() (Health, error) {
         health.HTTPStatusCode = resp.StatusCode
 
         // Parse json
-        err = json.Unmarshal(body, &health)
+        err = jsonCustom.Unmarshal(body, &health)
     }
     return health, err
 }
