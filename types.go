@@ -1,11 +1,15 @@
 
 package eosapi;
 
-import "time"
+import (
+    "time"
+    "github.com/imroc/req/v3"
+)
 
 type Client struct {
     Url string
     Host string
+    client *req.Client
 }
 
 // get_info format (not all fields).

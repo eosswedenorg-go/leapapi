@@ -5,12 +5,11 @@ import (
     "strings"
     "time"
     "net/url"
-    "io/ioutil"
-    "github.com/imroc/req"
+    "github.com/imroc/req/v3"
     jsontime "github.com/liamylian/jsontime/v2/v2"
 )
 
-var jsonCustom = jsontime.ConfigWithCustomTimeFormat
+var json = jsontime.ConfigWithCustomTimeFormat
 
 func init() {
 
@@ -19,13 +18,19 @@ func init() {
 }
 
 func New(url string) (*Client) {
+
+    rc := req.C().
+        SetJsonMarshal(json.Marshal).
+        SetJsonUnmarshal(json.Unmarshal)
+
     return &Client{
         Url: url,
         Host: "",
+        client: rc,
     }
 }
 
-func (c *Client) send(method string, path string) (*req.Resp, error) {
+func (c *Client) send(method string, path string) (*req.Response, error) {
 
     host := c.Host
     if len(host) < 1 {
@@ -39,12 +44,9 @@ func (c *Client) send(method string, path string) (*req.Resp, error) {
     // Go's net.http (that `req` uses) sends the port in the host header.
     // nodeos api does not like that, so we need to provide our
     // own Host header with just the host.
-    headers := req.Header{
-        "Host": host,
-    }
-
-    r := req.New()
-    return r.Do(method, c.Url + path, headers)
+    return c.client.R().
+        SetHeader("Host", host).
+        Send(method, c.Url + path)
 }
 
 //  GetInfo - Fetches "/v1/chain/get_info" from API
@@ -55,14 +57,12 @@ func (c *Client) GetInfo() (Info, error) {
 
     r, err := c.send("GET", "/v1/chain/get_info")
     if err == nil {
-        resp := r.Response()
-        body, _ := ioutil.ReadAll(resp.Body)
 
         // Set HTTPStatusCode
-        info.HTTPStatusCode = resp.StatusCode
+        info.HTTPStatusCode = r.StatusCode
 
         // Parse json
-        err = jsonCustom.Unmarshal(body, &info)
+        err = r.UnmarshalJson(&info)
     }
     return info, err
 }
@@ -75,14 +75,12 @@ func (c *Client) GetHealth() (Health, error) {
 
     r, err := c.send("GET", "/v2/health")
     if err == nil {
-        resp := r.Response()
-        body, _ := ioutil.ReadAll(resp.Body)
 
         // Set HTTPStatusCode
-        health.HTTPStatusCode = resp.StatusCode
+        health.HTTPStatusCode = r.StatusCode
 
         // Parse json
-        err = jsonCustom.Unmarshal(body, &health)
+        err = r.UnmarshalJson(&health)
     }
     return health, err
 }
