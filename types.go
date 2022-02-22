@@ -47,8 +47,9 @@ func (s *Service) UnmarshalJSON(b []byte) error {
 	return err
 }
 
-// /v2/health format (not all fields).
+// /v2/health format
 type Health struct {
+    Version         string                  `json:"version"`
     VersionHash     string                  `json:"version_hash"`
     Health          []Service               `json:"health"`
     Features        map[string]interface{}  `json:"features"`

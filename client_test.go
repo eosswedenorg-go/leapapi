@@ -71,6 +71,7 @@ func TestGetHealth(t *testing.T) {
     h, err := client.GetHealth()
 
     require.NoError(t, err)
+    assert.Equal(t, h.Version, "1.0")
     assert.Equal(t, h.VersionHash, "028d5a34463884fcbe2ecfd3c0fcb3b5d4d538f4fd64803c1ef7209c85f2f266")
     assert.Equal(t, len(h.Health), 2)
 
