@@ -76,12 +76,12 @@ func TestGetHealth(t *testing.T) {
 
     assert.Equal(t, h.Health[0].Name, "Service1")
     assert.Equal(t, h.Health[0].Status, "OK")
-    assert.Equal(t, h.Health[0].Time, int64(1642174781678))
+    assert.Equal(t, h.Health[0].Time, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 678, time.UTC)))
     assert.Equal(t, len(h.Health[0].Data), 0)
 
     assert.Equal(t, h.Health[1].Name, "Service2")
     assert.Equal(t, h.Health[1].Status, "DOWN")
-    assert.Equal(t, h.Health[1].Time, int64(1642174781736))
+    assert.Equal(t, h.Health[1].Time, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 736, time.UTC)))
     assert.Equal(t, len(h.Health[1].Data), 2)
 
     assert.Equal(t, h.Health[1].Data["key1"], float64(1234))

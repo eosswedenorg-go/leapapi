@@ -22,10 +22,29 @@ type Info struct {
 
 // Service struct from /v2/health
 type Service struct {
-    Name    string                 `json:"service"`
-    Status  string                 `json:"status"`
-    Data    map[string]interface{} `json:"service_data"`
-    Time    int64                  `json:"time"` // unix timestamp.
+    Name    string
+    Status  string
+    Data    map[string]interface{}
+    Time    time.Time
+}
+
+func (s *Service) UnmarshalJSON(b []byte) error {
+
+    var r struct {
+        N string                 `json:"service"`
+        S string                 `json:"status"`
+        D map[string]interface{} `json:"service_data"`
+        T int64                  `json:"time"`
+    }
+
+	err := json.Unmarshal(b, &r)
+	if err == nil {
+        s.Name = r.N
+        s.Status = r.S
+        s.Data = r.D
+        s.Time = fromTS(r.T)
+	}
+	return err
 }
 
 // /v2/health format (not all fields).
