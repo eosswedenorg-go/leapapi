@@ -1,6 +1,6 @@
 module github.com/eosswedenorg-go/eosapi
 
-go 1.14
+go 1.16
 
 require (
 	github.com/imroc/req/v3 v3.7.6
