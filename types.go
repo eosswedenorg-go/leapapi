@@ -2,7 +2,9 @@
 package eosapi;
 
 import (
+    "fmt"
     "time"
+    "net/http"
     "github.com/imroc/req/v3"
 )
 
@@ -55,4 +57,19 @@ type Health struct {
     Features        map[string]interface{}  `json:"features"`
     QueryTime       float32                 `json:"query_time_ms"`
     HTTPStatusCode  int
+}
+
+// Error
+type HTTPError struct {
+    Code int
+    Message string
+}
+
+func (e HTTPError) Error() string {
+
+    msg := e.Message
+    if len(msg) < 1 {
+        msg = http.StatusText(e.Code)
+    }
+    return fmt.Sprintf("server returned HTTP %d %s", e.Code, msg)
 }
