@@ -1,6 +1,7 @@
 package eosapi
 
 import (
+    "fmt"
     "strings"
     "time"
     "net/url"
@@ -43,9 +44,14 @@ func (c *Client) send(method string, path string) (*req.Response, error) {
     // Go's net.http (that `req` uses) sends the port in the host header.
     // nodeos api does not like that, so we need to provide our
     // own Host header with just the host.
-    return c.client.R().
+    r, err := c.client.R().
         SetHeader("Host", host).
         Send(method, c.Url + path)
+
+    if err == nil && r.IsError() {
+        return r, fmt.Errorf("server returned HTTP %s", r.Status)
+    }
+    return r, err
 }
 
 //  GetInfo - Fetches "/v1/chain/get_info" from API
