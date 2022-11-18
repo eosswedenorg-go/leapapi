@@ -1,5 +1,4 @@
-
-package eosapi;
+package eosapi
 
 import (
     "strings"
