@@ -63,6 +63,19 @@ func TestGetInfo(t *testing.T) {
     assert.Equal(t, info.HTTPStatusCode, 200)
 }
 
+func TestGetInfoHTTPError(t *testing.T) {
+
+    var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+        info := `{}`
+        res.WriteHeader(500)
+        res.Write([]byte(info))
+    }))
+
+    client := New(srv.URL)
+
+    _, err := client.GetInfo()
+    require.EqualError(t, err, "server returned HTTP 500 Internal Server Error")
+}
 
 func TestGetHealth(t *testing.T) {
 
@@ -87,4 +100,18 @@ func TestGetHealth(t *testing.T) {
 
     assert.Equal(t, h.Health[1].Data["key1"], float64(1234))
     assert.Equal(t, h.Health[1].Data["key2"], "some_string")
+}
+
+func TestGetHealthHTTPError(t *testing.T) {
+
+    var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+        info := `{}`
+        res.WriteHeader(404)
+        res.Write([]byte(info))
+    }))
+
+    client := New(srv.URL)
+
+    _, err := client.GetHealth()
+    require.EqualError(t, err, "server returned HTTP 404 Not Found")
 }
