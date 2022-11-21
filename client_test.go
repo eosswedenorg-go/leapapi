@@ -66,15 +66,54 @@ func TestGetInfo(t *testing.T) {
 func TestGetInfoHTTPError(t *testing.T) {
 
     var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-        info := `{}`
+        payload := `{
+            "code":500,
+            "message":"Internal Server Error",
+            "error":{
+                "code":22,
+                "name":"assertion",
+                "what":"unspecified",
+                "details":[
+                    {
+                        "message":"Assertion failed: a != b",
+                        "file":"abi_reader.cpp",
+                        "line_number":271,
+                        "method":"read_abi"
+                    }
+                ]
+            }
+        }`
         res.WriteHeader(500)
-        res.Write([]byte(info))
+        res.Write([]byte(payload))
     }))
 
     client := New(srv.URL)
 
     _, err := client.GetInfo()
     require.EqualError(t, err, "server returned HTTP 500 Internal Server Error")
+
+    api_err, ok := err.(APIError)
+    require.True(t, ok)
+
+    expected := APIError{
+        Code: 500,
+        Message: "Internal Server Error",
+        Err: APIErrorInner{
+            Code: 22,
+            Name: "assertion",
+            What: "unspecified",
+            Details: []APIErrorDetail{
+                {
+                    Message: "Assertion failed: a != b",
+                    File: "abi_reader.cpp",
+                    Line: 271,
+                    Method: "read_abi",
+                },
+            },
+        },
+    }
+
+    require.Equal(t, expected, api_err)
 }
 
 func TestGetHealth(t *testing.T) {
@@ -105,13 +144,52 @@ func TestGetHealth(t *testing.T) {
 func TestGetHealthHTTPError(t *testing.T) {
 
     var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-        info := `{}`
+        payload := `{
+            "code":404,
+            "message":"Not Found",
+            "error":{
+                "code":0,
+                "name":"exception",
+                "what":"unspecified",
+                "details":[
+                    {
+                        "message":"Some Error",
+                        "file":"file.cpp",
+                        "line_number":1337,
+                        "method":"some_method"
+                    }
+                ]
+            }
+        }`
         res.WriteHeader(404)
-        res.Write([]byte(info))
+        res.Write([]byte(payload))
     }))
 
     client := New(srv.URL)
 
     _, err := client.GetHealth()
     require.EqualError(t, err, "server returned HTTP 404 Not Found")
+
+    api_err, ok := err.(APIError)
+    require.True(t, ok)
+
+    expected := APIError{
+        Code: 404,
+        Message: "Not Found",
+        Err: APIErrorInner{
+            Code: 0,
+            Name: "exception",
+            What: "unspecified",
+            Details: []APIErrorDetail{
+                {
+                    Message: "Some Error",
+                    File: "file.cpp",
+                    Line: 1337,
+                    Method: "some_method",
+                },
+            },
+        },
+    }
+
+    require.Equal(t, expected, api_err)
 }
