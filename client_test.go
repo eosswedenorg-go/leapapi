@@ -116,6 +116,20 @@ func TestGetInfoHTTPError(t *testing.T) {
     require.Equal(t, expected, api_err)
 }
 
+func TestGetInfoEmptyError(t *testing.T) {
+
+    var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+        payload := `{}`
+        res.WriteHeader(401)
+        res.Write([]byte(payload))
+    }))
+
+    client := New(srv.URL)
+
+    _, err := client.GetHealth()
+    require.EqualError(t, err, "server returned HTTP 401 Unauthorized")
+}
+
 func TestGetHealth(t *testing.T) {
 
     client := New(testServer.URL)
@@ -192,4 +206,18 @@ func TestGetHealthHTTPError(t *testing.T) {
     }
 
     require.Equal(t, expected, api_err)
+}
+
+func TestGetHealthEmptyError(t *testing.T) {
+
+    var srv = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+        payload := `{}`
+        res.WriteHeader(500)
+        res.Write([]byte(payload))
+    }))
+
+    client := New(srv.URL)
+
+    _, err := client.GetHealth()
+    require.EqualError(t, err, "server returned HTTP 500 Internal Server Error")
 }
