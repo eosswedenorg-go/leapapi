@@ -51,7 +51,7 @@ func (c *Client) send(method string, path string) (*req.Response, error) {
         var api_err APIError
         // Parse error object.
         err = r.UnmarshalJson(&api_err)
-        if err != nil || api_err.Code == 0 {
+        if err != nil || api_err.IsEmpty() {
             // Failed to parse error object. just return an generic HTTP error
             return r, HTTPError{Code: r.StatusCode}
         }
