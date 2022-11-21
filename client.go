@@ -1,7 +1,6 @@
 package eosapi
 
 import (
-    "fmt"
     "strings"
     "time"
     "net/url"
@@ -49,7 +48,14 @@ func (c *Client) send(method string, path string) (*req.Response, error) {
         Send(method, c.Url + path)
 
     if err == nil && r.IsError() {
-        return r, fmt.Errorf("server returned HTTP %s", r.Status)
+        var api_err APIError
+        // Parse error object.
+        err = r.UnmarshalJson(&api_err)
+        if err != nil {
+            // Failed to parse error object. just return an generic HTTP error
+            return r, HTTPError{Code: r.StatusCode}
+        }
+        err = api_err
     }
     return r, err
 }
