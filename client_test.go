@@ -50,6 +50,14 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
 
 }))
 
+func TestSendUrlParseFails(t *testing.T) {
+
+    client := New("api.mylittleponies.org\n")
+
+    _, err := client.send("GET", "/v1/ponies/Rainbow Dash")
+    assert.EqualError(t, err, "parse \"api.mylittleponies.org\\n\": net/url: invalid control character in URL")
+}
+
 func TestGetInfo(t *testing.T) {
 
     client := New(testServer.URL)
