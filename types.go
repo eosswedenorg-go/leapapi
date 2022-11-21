@@ -5,6 +5,7 @@ import (
     "fmt"
     "time"
     "net/http"
+    "strings"
     "github.com/imroc/req/v3"
 )
 
@@ -71,5 +72,7 @@ func (e HTTPError) Error() string {
     if len(msg) < 1 {
         msg = http.StatusText(e.Code)
     }
-    return fmt.Sprintf("server returned HTTP %d %s", e.Code, msg)
+
+    msg = fmt.Sprintf("server returned HTTP %d %s", e.Code, msg)
+    return strings.TrimSpace(msg)
 }
