@@ -5,6 +5,7 @@ import (
     "time"
     "net/http"
     "strings"
+    "github.com/google/go-cmp/cmp"
     "github.com/imroc/req/v3"
 )
 
@@ -94,6 +95,10 @@ type APIError struct {
     Code int64          `json:"code"`
     Message string      `json:"message"`
     Err APIErrorInner   `json:"error"`
+}
+
+func (e *APIError) IsEmpty() bool {
+    return cmp.Equal(*e, APIError{})
 }
 
 func (e APIError) Error() string {
