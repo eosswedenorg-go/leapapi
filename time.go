@@ -1,4 +1,4 @@
-package eosapi
+package leapapi
 
 import "time"
 

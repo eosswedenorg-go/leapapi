@@ -1,4 +1,4 @@
-module github.com/eosswedenorg-go/eosapi
+module github.com/eosswedenorg-go/leapapi
 
 go 1.16
 
