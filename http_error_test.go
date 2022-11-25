@@ -1,8 +1,6 @@
 package leapapi
 
-import (
-	"testing"
-)
+import "testing"
 
 func TestHTTPError_Error(t *testing.T) {
 	type fields struct {

@@ -9,6 +9,12 @@ import (
 	jsontime "github.com/liamylian/jsontime/v2/v2"
 )
 
+type Client struct {
+	Url    string
+	Host   string
+	client *req.Client
+}
+
 var json = jsontime.ConfigWithCustomTimeFormat
 
 func init() {
