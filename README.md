@@ -1,11 +1,11 @@
-# EOS Api
+# Antelope Leap HTTP Api
 
-[eosio HTTP API](https://developers.eos.io/welcome/latest/reference/index) and [hyperion API](https://hyperion.docs.eosrio.io) written in go.
+[Leap HTTP API](https://developers.eos.io/welcome/latest/reference/index) and [hyperion API](https://hyperion.docs.eosrio.io) written in go.
 
 ### Install package
 
 ``` bash
-go get -u github.com/eosswedenorg-go/eosapi@latest
+go get -u github.com/eosswedenorg-go/leapapi@latest
 ```
 
 ### Types
