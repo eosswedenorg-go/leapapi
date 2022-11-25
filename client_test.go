@@ -18,7 +18,8 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
             "head_block_time": "2018-01-01T13:37:01"
         }`
 
-		res.Write([]byte(info))
+		_, _ = res.Write([]byte(info))
+
 	}
 
 	if req.URL.String() == "/v2/health" {
@@ -44,7 +45,7 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
             ]
         }`
 
-		res.Write([]byte(info))
+		_, _ = res.Write([]byte(info))
 	}
 }))
 
@@ -87,7 +88,8 @@ func TestGetInfoHTTPError(t *testing.T) {
             }
         }`
 		res.WriteHeader(500)
-		res.Write([]byte(payload))
+		_, err := res.Write([]byte(payload))
+		assert.NoError(t, err)
 	}))
 
 	client := New(srv.URL)
@@ -123,7 +125,8 @@ func TestGetInfoEmptyError(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		payload := `{}`
 		res.WriteHeader(401)
-		res.Write([]byte(payload))
+		_, err := res.Write([]byte(payload))
+		assert.NoError(t, err)
 	}))
 
 	client := New(srv.URL)
@@ -176,7 +179,8 @@ func TestGetHealthHTTPError(t *testing.T) {
             }
         }`
 		res.WriteHeader(404)
-		res.Write([]byte(payload))
+		_, err := res.Write([]byte(payload))
+		assert.NoError(t, err)
 	}))
 
 	client := New(srv.URL)
@@ -212,7 +216,8 @@ func TestGetHealthEmptyError(t *testing.T) {
 	srv := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
 		payload := `{}`
 		res.WriteHeader(500)
-		res.Write([]byte(payload))
+		_, err := res.Write([]byte(payload))
+		assert.NoError(t, err)
 	}))
 
 	client := New(srv.URL)
