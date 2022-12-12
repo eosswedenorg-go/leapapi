@@ -3,6 +3,7 @@ package leapapi
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"testing"
 	"time"
 
@@ -54,6 +55,37 @@ func TestSendUrlParseFails(t *testing.T) {
 
 	_, err := client.send("GET", "/v1/ponies/Rainbow Dash")
 	assert.EqualError(t, err, "parse \"api.mylittleponies.org\\n\": net/url: invalid control character in URL")
+}
+
+func TestSendDefaultHostHeader(t *testing.T) {
+	expected := ""
+
+	srv := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, expected, req.Host)
+	}))
+
+	u, err := url.Parse(srv.URL)
+	require.NoError(t, err)
+
+	expected = u.Host
+	client := New(srv.URL)
+
+	_, err = client.send("GET", "/")
+	require.NoError(t, err)
+}
+
+func TestSendCustomHostHeader(t *testing.T) {
+	expected := "CustomHost"
+
+	srv := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		assert.Equal(t, expected, req.Host)
+	}))
+
+	client := New(srv.URL)
+	client.Host = expected
+
+	_, err := client.send("GET", "/")
+	require.NoError(t, err)
 }
 
 func TestGetInfo(t *testing.T) {
