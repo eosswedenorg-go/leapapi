@@ -2,7 +2,6 @@ package leapapi
 
 import (
 	"net/url"
-	"strings"
 	"time"
 
 	"github.com/imroc/req/v3"
@@ -41,7 +40,7 @@ func (c *Client) send(method string, path string) (*req.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		host = strings.Split(u.Host, ":")[0]
+		host = u.Host
 	}
 
 	// Go's net.http (that `req` uses) sends the port in the host header.
