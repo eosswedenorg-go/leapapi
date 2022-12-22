@@ -7,5 +7,5 @@ type Info struct {
 	ServerVersion  string    `json:"server_version"`
 	HeadBlockNum   int64     `json:"head_block_num"`
 	HeadBlockTime  time.Time `json:"head_block_time"`
-	HTTPStatusCode int
+	HTTPStatusCode int       `json:"-"`
 }
