@@ -2,23 +2,14 @@ package leapapi
 
 import (
 	"net/url"
-	"time"
 
 	"github.com/imroc/req/v3"
-	jsontime "github.com/liamylian/jsontime/v2/v2"
 )
 
 type Client struct {
 	Url    string
 	Host   string
 	client *req.Client
-}
-
-var json = jsontime.ConfigWithCustomTimeFormat
-
-func init() {
-	// EOS Api does not specify timezone in timestamps (they are always UTC tho).
-	jsontime.SetDefaultTimeFormat("2006-01-02T15:04:05", time.UTC)
 }
 
 func New(url string) *Client {
