@@ -107,7 +107,6 @@ func TestInfo_JsonEncodeV2(t *testing.T) {
 func TestInfo_JsonDecode(t *testing.T) {
 	info := Info{}
 
-	// payload := "{\"server_version\":\"94975d6\",\"head_block_num\":888222,\"head_block_time\":\"2019-08-04T13:33:54\"}"
 	payload := `{
 		"server_version": "94975d6",
 		"server_version_string": "v2.0.0",
