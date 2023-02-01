@@ -15,7 +15,7 @@ type Client struct {
 func New(url string) *Client {
 	rc := req.C().
 		SetJsonMarshal(json.Marshal).
-		SetJsonUnmarshal(json.Unmarshal)
+		SetJsonUnmarshal(customJsonUnmarshal)
 
 	return &Client{
 		Url:    url,
