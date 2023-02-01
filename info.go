@@ -4,8 +4,6 @@ import "time"
 
 // get_info format
 type Info struct {
-	HTTPStatusCode int `json:"-"`
-
 	ServerVersion             string    `json:"server_version"`
 	ServerVersionString       string    `json:"server_version_string"`
 	ServerFullVersionString   string    `json:"server_full_version_string"`

@@ -97,7 +97,6 @@ func TestGetInfo(t *testing.T) {
 	assert.Equal(t, info.ServerVersion, "d1bc8d3")
 	assert.Equal(t, info.HeadBlockNum, int64(8888))
 	assert.Equal(t, info.HeadBlockTime, time.Unix(1514813821, 0).UTC())
-	assert.Equal(t, info.HTTPStatusCode, 200)
 }
 
 func TestGetInfoHTTPError(t *testing.T) {

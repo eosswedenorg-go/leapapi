@@ -62,10 +62,6 @@ func (c *Client) GetInfo() (Info, error) {
 
 	r, err := c.send("GET", "/v1/chain/get_info")
 	if err == nil {
-
-		// Set HTTPStatusCode
-		info.HTTPStatusCode = r.StatusCode
-
 		// Parse json
 		err = r.UnmarshalJson(&info)
 	}
@@ -80,10 +76,6 @@ func (c *Client) GetHealth() (Health, error) {
 
 	r, err := c.send("GET", "/v2/health")
 	if err == nil {
-
-		// Set HTTPStatusCode
-		health.HTTPStatusCode = r.StatusCode
-
 		// Parse json
 		err = r.UnmarshalJson(&health)
 	}
