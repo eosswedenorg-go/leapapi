@@ -94,9 +94,9 @@ func TestGetInfo(t *testing.T) {
 	info, err := client.GetInfo()
 
 	require.NoError(t, err)
-	assert.Equal(t, info.ServerVersion, "d1bc8d3")
-	assert.Equal(t, info.HeadBlockNum, int64(8888))
-	assert.Equal(t, info.HeadBlockTime, time.Unix(1514813821, 0).UTC())
+	assert.Equal(t, "d1bc8d3", info.ServerVersion)
+	assert.Equal(t, int64(8888), info.HeadBlockNum)
+	assert.Equal(t, time.Unix(1514813821, 0).UTC(), info.HeadBlockTime)
 }
 
 func TestGetInfoHTTPError(t *testing.T) {
@@ -172,22 +172,22 @@ func TestGetHealth(t *testing.T) {
 	h, err := client.GetHealth()
 
 	require.NoError(t, err)
-	assert.Equal(t, h.Version, "1.0")
-	assert.Equal(t, h.VersionHash, "028d5a34463884fcbe2ecfd3c0fcb3b5d4d538f4fd64803c1ef7209c85f2f266")
-	assert.Equal(t, len(h.Health), 2)
+	assert.Equal(t, "1.0", h.Version)
+	assert.Equal(t, "028d5a34463884fcbe2ecfd3c0fcb3b5d4d538f4fd64803c1ef7209c85f2f266", h.VersionHash)
+	assert.Equal(t, 2, len(h.Health))
 
-	assert.Equal(t, h.Health[0].Name, "Service1")
-	assert.Equal(t, h.Health[0].Status, "OK")
-	assert.Equal(t, h.Health[0].Time, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 678, time.UTC)))
-	assert.Equal(t, len(h.Health[0].Data), 0)
+	assert.Equal(t, "Service1", h.Health[0].Name)
+	assert.Equal(t, "OK", h.Health[0].Status)
+	assert.Equal(t, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 678, time.UTC)), h.Health[0].Time)
+	assert.Equal(t, 0, len(h.Health[0].Data))
 
-	assert.Equal(t, h.Health[1].Name, "Service2")
-	assert.Equal(t, h.Health[1].Status, "DOWN")
-	assert.Equal(t, h.Health[1].Time, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 736, time.UTC)))
+	assert.Equal(t, "Service2", h.Health[1].Name)
+	assert.Equal(t, "DOWN", h.Health[1].Status)
+	assert.Equal(t, time.Time(time.Date(2022, time.January, 14, 15, 39, 41, 736, time.UTC)), h.Health[1].Time)
 	assert.Equal(t, len(h.Health[1].Data), 2)
 
-	assert.Equal(t, h.Health[1].Data["key1"], float64(1234))
-	assert.Equal(t, h.Health[1].Data["key2"], "some_string")
+	assert.Equal(t, float64(1234), h.Health[1].Data["key1"])
+	assert.Equal(t, "some_string", h.Health[1].Data["key2"])
 }
 
 func TestGetHealthHTTPError(t *testing.T) {
