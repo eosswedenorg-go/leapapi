@@ -17,3 +17,11 @@ func init() {
 func Json() jsoniter.API {
 	return json
 }
+
+func customJsonUnmarshal(data []byte, v interface{}) error {
+	// Empty data is valid.
+	if len(data) < 1 {
+		return nil
+	}
+	return json.Unmarshal(data, v)
+}
