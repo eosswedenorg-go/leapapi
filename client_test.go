@@ -53,7 +53,7 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
 func TestSendUrlParseFails(t *testing.T) {
 	client := New("api.mylittleponies.org\n")
 
-	_, err := client.send("GET", "/v1/ponies/Rainbow Dash")
+	err := client.send("GET", "/v1/ponies/Rainbow Dash", nil, nil)
 	assert.EqualError(t, err, "parse \"api.mylittleponies.org\\n\": net/url: invalid control character in URL")
 }
 
@@ -70,7 +70,7 @@ func TestSendDefaultHostHeader(t *testing.T) {
 	expected = u.Host
 	client := New(srv.URL)
 
-	_, err = client.send("GET", "/")
+	err = client.send("GET", "/", nil, nil)
 	require.NoError(t, err)
 }
 
@@ -84,7 +84,7 @@ func TestSendCustomHostHeader(t *testing.T) {
 	client := New(srv.URL)
 	client.Host = expected
 
-	_, err := client.send("GET", "/")
+	err := client.send("GET", "/", nil, nil)
 	require.NoError(t, err)
 }
 
