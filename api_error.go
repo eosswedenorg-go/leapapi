@@ -1,6 +1,8 @@
 package leapapi
 
 import (
+	"fmt"
+
 	"github.com/google/go-cmp/cmp"
 )
 
@@ -29,5 +31,5 @@ func (e *APIError) IsEmpty() bool {
 }
 
 func (e APIError) Error() string {
-	return HTTPError{Code: int(e.Code), Message: e.Message}.Error()
+	return fmt.Sprintf("%d %s", e.Code, e.Message)
 }

@@ -126,7 +126,7 @@ func TestGetInfoHTTPError(t *testing.T) {
 	client := New(srv.URL)
 
 	_, err := client.GetInfo()
-	require.EqualError(t, err, "server returned HTTP 500 Internal Server Error")
+	require.EqualError(t, err, "500 Internal Server Error")
 
 	api_err, ok := err.(APIError)
 	require.True(t, ok)
@@ -217,7 +217,7 @@ func TestGetHealthHTTPError(t *testing.T) {
 	client := New(srv.URL)
 
 	_, err := client.GetHealth()
-	require.EqualError(t, err, "server returned HTTP 404 Not Found")
+	require.EqualError(t, err, "404 Not Found")
 
 	api_err, ok := err.(APIError)
 	require.True(t, ok)
