@@ -26,7 +26,6 @@ type Info struct {
 	ServerVersion string
 	HeadBlockNum int64
 	HeadBlockTime time.Time
-	HTTPStatusCode int
 }
 ```
 
@@ -36,7 +35,6 @@ Hyperion health struct (not all fields).
 type Health struct {
 	VersionHash string
 	Health []Service
-	HTTPStatusCode int
 }
 ```
 
