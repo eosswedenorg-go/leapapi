@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 
@@ -50,6 +51,43 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
 		_, _ = res.Write([]byte(info))
 	}
 }))
+
+func TestSendContextTimeout(t *testing.T) {
+	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		time.Sleep(time.Second * 4)
+	}))
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	defer cancel()
+
+	client := New(testServer.URL)
+
+	err := client.send(ctx, "GET", "/", nil, nil)
+	assert.Error(t, err)
+	assert.True(t, strings.HasSuffix(err.Error(), "deadline exceeded"), "Error was not deadline exceeded")
+}
+
+func TestSendContextCancel(t *testing.T) {
+	done := make(chan interface{})
+	testServer := httptest.NewServer(http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
+		time.Sleep(time.Second * 10)
+	}))
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second*2)
+	client := New(testServer.URL)
+
+	go func() {
+		defer close(done)
+		err := client.send(ctx, "GET", "/", nil, nil)
+		assert.Error(t, err)
+		assert.True(t, strings.HasSuffix(err.Error(), "context canceled"), "Error was not context canceled")
+	}()
+
+	time.Sleep(time.Second)
+	cancel()
+
+	<-done
+}
 
 func TestSendUrlParseFails(t *testing.T) {
 	client := New("api.mylittleponies.org\n")
