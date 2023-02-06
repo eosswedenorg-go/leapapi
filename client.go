@@ -1,6 +1,7 @@
 package leapapi
 
 import (
+	"context"
 	"net/url"
 
 	"github.com/imroc/req/v3"
@@ -24,7 +25,7 @@ func New(url string) *Client {
 	}
 }
 
-func (c *Client) send(method string, path string, body interface{}, out interface{}) error {
+func (c *Client) send(ctx context.Context, method string, path string, body interface{}, out interface{}) error {
 	host := c.Host
 	if len(host) < 1 {
 		u, err := url.Parse(c.Url)
@@ -38,6 +39,7 @@ func (c *Client) send(method string, path string, body interface{}, out interfac
 	// nodeos api does not like that, so we need to provide our
 	// own Host header with just the host.
 	r, err := c.client.R().
+		SetContext(ctx).
 		SetHeader("Host", host).
 		SetBody(body).
 		Send(method, c.Url+path)
@@ -63,15 +65,15 @@ func (c *Client) send(method string, path string, body interface{}, out interfac
 //	GetInfo - Fetches "/v1/chain/get_info" from API
 //
 // ---------------------------------------------------------
-func (c *Client) GetInfo() (info Info, err error) {
-	err = c.send("GET", "/v1/chain/get_info", nil, &info)
+func (c *Client) GetInfo(ctx context.Context) (info Info, err error) {
+	err = c.send(ctx, "GET", "/v1/chain/get_info", nil, &info)
 	return
 }
 
 //	Health - Fetches "/v2/health" from API
 //
 // ---------------------------------------------------------
-func (c *Client) GetHealth() (health Health, err error) {
-	err = c.send("GET", "/v2/health", nil, &health)
+func (c *Client) GetHealth(ctx context.Context) (health Health, err error) {
+	err = c.send(ctx, "GET", "/v2/health", nil, &health)
 	return
 }

@@ -1,6 +1,7 @@
 package leapapi
 
 import (
+	"context"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -53,7 +54,7 @@ var testServer = httptest.NewServer(http.HandlerFunc(func(res http.ResponseWrite
 func TestSendUrlParseFails(t *testing.T) {
 	client := New("api.mylittleponies.org\n")
 
-	err := client.send("GET", "/v1/ponies/Rainbow Dash", nil, nil)
+	err := client.send(context.Background(), "GET", "/v1/ponies/Rainbow Dash", nil, nil)
 	assert.EqualError(t, err, "parse \"api.mylittleponies.org\\n\": net/url: invalid control character in URL")
 }
 
@@ -70,7 +71,7 @@ func TestSendDefaultHostHeader(t *testing.T) {
 	expected = u.Host
 	client := New(srv.URL)
 
-	err = client.send("GET", "/", nil, nil)
+	err = client.send(context.Background(), "GET", "/", nil, nil)
 	require.NoError(t, err)
 }
 
@@ -84,14 +85,14 @@ func TestSendCustomHostHeader(t *testing.T) {
 	client := New(srv.URL)
 	client.Host = expected
 
-	err := client.send("GET", "/", nil, nil)
+	err := client.send(context.Background(), "GET", "/", nil, nil)
 	require.NoError(t, err)
 }
 
 func TestGetInfo(t *testing.T) {
 	client := New(testServer.URL)
 
-	info, err := client.GetInfo()
+	info, err := client.GetInfo(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, "d1bc8d3", info.ServerVersion)
@@ -125,7 +126,7 @@ func TestGetInfoHTTPError(t *testing.T) {
 
 	client := New(srv.URL)
 
-	_, err := client.GetInfo()
+	_, err := client.GetInfo(context.Background())
 	require.EqualError(t, err, "500 Internal Server Error")
 
 	api_err, ok := err.(APIError)
@@ -162,14 +163,14 @@ func TestGetInfoEmptyError(t *testing.T) {
 
 	client := New(srv.URL)
 
-	_, err := client.GetHealth()
+	_, err := client.GetHealth(context.Background())
 	require.EqualError(t, err, "server returned HTTP 401 Unauthorized")
 }
 
 func TestGetHealth(t *testing.T) {
 	client := New(testServer.URL)
 
-	h, err := client.GetHealth()
+	h, err := client.GetHealth(context.Background())
 
 	require.NoError(t, err)
 	assert.Equal(t, "1.0", h.Version)
@@ -216,7 +217,7 @@ func TestGetHealthHTTPError(t *testing.T) {
 
 	client := New(srv.URL)
 
-	_, err := client.GetHealth()
+	_, err := client.GetHealth(context.Background())
 	require.EqualError(t, err, "404 Not Found")
 
 	api_err, ok := err.(APIError)
@@ -253,6 +254,6 @@ func TestGetHealthEmptyError(t *testing.T) {
 
 	client := New(srv.URL)
 
-	_, err := client.GetHealth()
+	_, err := client.GetHealth(context.Background())
 	require.EqualError(t, err, "server returned HTTP 500 Internal Server Error")
 }
